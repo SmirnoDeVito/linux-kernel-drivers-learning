@@ -3,7 +3,7 @@
 #include <linux/fs.h>
 
 /*список функций*/
-static const struct file_operations llkd_misc_fops { 
+static const struct file_operations llkd_misc_fops = { 
     /*создаем и заполняем структуру file_operations*/
     /*file_operations - структура в которой записано, какие функции должен вызвать драйвер ,*/
     /* когда пользователь делает то или иное действеи с файлом в DEV*/
@@ -20,12 +20,12 @@ static struct miscdevice llkd_miscdev = {
 
 
     .mode = 0666, /* эта строчка задает права доступа к файлу твего драйвера в папке  dev*/
-    .fops = &llkd_misc_fops /*передаем ядру ссылку на список своих Си функций */
+    .fops = &llkd_misc_fops, /*передаем ядру ссылку на список своих Си функций */
     /*связывание со списком функций*/
 };
 
 /*модуль загрузки*/
-static  int __init miscdrv_init (void):
+static  int __init miscdrv_init (void)
 {
     int ret; 
     struct device *dev;
@@ -33,14 +33,15 @@ static  int __init miscdrv_init (void):
     if (ret!=0)
     {
         pr_notice("misc device registration failed\n");
+        return ret;
     }
     dev = llkd_miscdev.this_device;
 
-    pr_info ("LLKD misc driver minor = %d", "dev name = /dev/%s \n", llkd_miscdev.minor, llkd_miscdev.name);
+    pr_info ("LLKD misc driver minor = %d, dev name = /dev/%s \n", llkd_miscdev.minor, llkd_miscdev.name);
     /*простой вывод пишет текст в лог*/
 
 
     dev_info (dev, "dev_info  minor -  %d \n", llkd_miscdev.minor);
     /*умный вывод просить в начале указатель на структуру miscdevice*/
     return ret;
-}
+};
