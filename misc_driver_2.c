@@ -2,15 +2,21 @@
 #include <linux/miscdevice.h>
 #include <linux/fs.h>
 
+/*временная заглушка функции open_miscdrv*/
+static int open_miscdrv(struct inode *inode, struct file *file)
+{
+    return 0;
+}
+
 /*список функций*/
 static const struct file_operations llkd_misc_fops = { 
     /*создаем и заполняем структуру file_operations*/
     /*file_operations - структура в которой записано, какие функции должен вызвать драйвер ,*/
     /* когда пользователь делает то или иное действеи с файлом в DEV*/
     .open = open_miscdrv,
-    .read = open_miscdrv,
+    /*.read = open_miscdrv,
     .write =open_miscdrv,
-    .release = open_miscdrv,
+    .release = open_miscdrv,*/
 };
 
 /*бланк misc*/
@@ -23,6 +29,13 @@ static struct miscdevice llkd_miscdev = {
     .fops = &llkd_misc_fops, /*передаем ядру ссылку на список своих Си функций */
     /*связывание со списком функций*/
 };
+
+/**/
+static void __exit miscdrv_exit(void)
+{
+    misc_deregister(&llkd_miscdev);
+    pr_info("LLKD misc driver unregistered");
+}
 
 /*модуль загрузки*/
 static  int __init miscdrv_init (void)
@@ -45,3 +58,8 @@ static  int __init miscdrv_init (void)
     /*умный вывод просить в начале указатель на структуру miscdevice*/
     return ret;
 };
+
+module_init(miscdrv_init);
+module_exit(miscdrv_exit);
+MODULE_LICENSE("GPL");
+
