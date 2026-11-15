@@ -1,10 +1,25 @@
 #define pr_fmt(fmt) "%s:%s(): " fmt, KBUILD_MODNAME, __func__
 #include <linux/miscdevice.h>
 #include <linux/fs.h>
+#include <linux/errno.h>
 
 /*временная заглушка функции open_miscdrv*/
 static int open_miscdrv(struct inode *inode, struct file *file)
 {
+    /*внутренняя структура данных в ядре, которая описывает сам файл*/
+    char *buf = kzalloc(PATH_MAX, GFP_KERNEL);
+    /* kzalloc - calloc , так как в ядре нет библиотеки libc у нее свои функции для расширения кучи*/
+    /*PATH_MAX - константа, означает всю возможную длинну пути к файлу 4096 байт*/
+    /* GFP_KERNEL - флга, который говорит менеджеру памяти , как себя вести при выделении*/
+    if(unlikely(!buf))
+    { 
+        /*unlikely - подсказка для процессора , оптимизация , подсказывают компилятору какой исход более вероятен*/
+        return ENOMEN;
+    }
+
+    pr_info(" opening!\n");
+    kfree(buf);
+    /*освобождение памяти*/
     return 0;
 }
 
@@ -62,4 +77,5 @@ static  int __init miscdrv_init (void)
 module_init(miscdrv_init);
 module_exit(miscdrv_exit);
 MODULE_LICENSE("GPL");
+
 
