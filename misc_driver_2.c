@@ -14,7 +14,7 @@ static int open_miscdrv(struct inode *inode, struct file *file)
     if(unlikely(!buf))
     { 
         /*unlikely - подсказка для процессора , оптимизация , подсказывают компилятору какой исход более вероятен*/
-        return ENOMEN;
+        return ENOMEM;
     }
 
     pr_info(" opening!\n");
