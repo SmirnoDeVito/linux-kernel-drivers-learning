@@ -3,6 +3,8 @@
 #include <linux/fs.h>
 #include <linux/errno.h>
 #include <linux/uaccess.h>
+#include <linux/slab.h>  /* Для kzalloc/kfree */
+#include <linux/string.h> /* Для strncpy */
 
 /*контекст драйверов - одна большая структура , в которую мы складываем все переменные,*/
 /*которые нужны вашему драйверу для работы*/
