@@ -25,7 +25,7 @@ static int open_miscdrv(struct inode *inode, struct file *file)
     if(unlikely(!buf))
     { 
         /*unlikely - подсказка для процессора , оптимизация , подсказывают компилятору какой исход более вероятен*/
-        return ENOMEM;
+        return -ENOMEM;
     }
 
     pr_info(" opening!\n");
@@ -39,7 +39,7 @@ static ssize_t read_miscdrv (struct file *file, char __user *ubuf, size_t count,
 {
     pr_info("read !");
     char *kbuf = kzalloc(PATH_MAX, GFP_KERNEL);
-
+    strncpy(kbuf, "Hello from driver!\n", count);
     /*Теперь у нас данные лежат в kbuf, программа ждет их в  ubuf ( в своей памяти )*/
     /*функция copy_to_user берет данные с kbuf и безопасно перекладывает их в ubuf*/
     /* Если она не смогла это сделать возвращает не нулевое значение*/
@@ -52,7 +52,7 @@ static ssize_t read_miscdrv (struct file *file, char __user *ubuf, size_t count,
     failed_s:
     kfree(kbuf);
 
-    return count;
+    return -EIO;
 }
 
 /*список функций*/
