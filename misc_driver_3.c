@@ -4,7 +4,14 @@
 #include <linux/errno.h>
 #include <linux/uaccess.h>
 
-
+/*контекст драйверов - одна большая структура , в которую мы складываем все переменные,*/
+/*которые нужны вашему драйверу для работы*/
+struct my_driver_context
+{
+    int open_count;
+    char secret[128];
+    int tx, rx;
+};
 
 
 /*временная заглушка функции open_miscdrv*/
@@ -102,4 +109,6 @@ static  int __init miscdrv_init (void)
 module_init(miscdrv_init);
 module_exit(miscdrv_exit);
 MODULE_LICENSE("GPL");
+
+
 
